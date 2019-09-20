@@ -36,12 +36,12 @@ public class Mondelbrot {
         Date d4;
         long diff2;
         for (y = -39; y < 39; y++) {
-            System.out.print("\n");
+//            System.out.print("\n");
             for (x = -39; x < 39; x++) {
                 Date d3 = new Date();
                 boolean isStar;
                 if (iterate(x/40.0f,y/40.0f) == 0) {
-                    System.out.print("*");
+//                    System.out.print("*");
                     d4 = new Date();
                     isStar = true;
                 }
@@ -68,23 +68,23 @@ public class Mondelbrot {
                 try {
                     if (!arr[i][j].star) {
                         coords = new Integer[2];
-                        coords[0] = i;
-                        coords[1] = j;
+                        coords[0] = i - 39;
+                        coords[1] = j - 39;
                         empty.add(coords);
                     } else if (!arr[i + 1][j].star || !arr[i - 1][j].star || !arr[i][j + 1].star || !arr[i][j - 1].star) {
                         coords = new Integer[2];
-                        coords[0] = i;
-                        coords[1] = j;
+                        coords[0] = i - 39;
+                        coords[1] = j - 39;
                         border.add(coords);
                     } else {
                         coords = new Integer[2];
-                        coords[0] = i;
-                        coords[1] = j;
+                        coords[0] = i - 39;
+                        coords[1] = j - 39;
                         filling.add(coords);
                     }
                 } catch (IndexOutOfBoundsException err) {
-                    coords[0] = i;
-                    coords[1] = j;
+                    coords[0] = i - 39;
+                    coords[1] = j - 39;
                     border.add(coords);
                 }
             }
@@ -96,7 +96,7 @@ public class Mondelbrot {
         // Всё это делали для того, чтобы не выводить из динамического листа, т.к. он выводит вроде бы менее охотно
         Date dateStart = new Date(); // !!! Можно сделать функцию и вызвать её три раза !!!
         for (Integer[] element : emptyDots) {
-            iterate(element[0], element[1]); // Игнорирование вывода, подсчёт времени после нахождения групп,
+            iterate(element[0]/40.0f, element[1]/40.0f); // Игнорирование вывода, подсчёт времени после нахождения групп,
         }                                    //а также преобразование динамического листа - идёт ради чистоты времени
         Date dateFinish = new Date();
         long differenceEmpty = dateFinish.getTime() - dateStart.getTime();
@@ -106,7 +106,7 @@ public class Mondelbrot {
         border.toArray(borderDots);
         dateStart = new Date();
         for (Integer[] element : emptyDots) {
-            iterate(element[0], element[1]);
+            iterate(element[0]/40.0f, element[1]/40.0f);
         }
         dateFinish = new Date();
         long differenceBorder = dateFinish.getTime() - dateStart.getTime();
@@ -116,10 +116,11 @@ public class Mondelbrot {
         border.toArray(fillingDots);
         dateStart = new Date();
         for (Integer[] element : emptyDots) {
-            iterate(element[0], element[1]);
+            iterate(element[0]/40.0f, element[1]/40.0f);
         }
         dateFinish = new Date();
         long differenceFilling = dateFinish.getTime() - dateStart.getTime();
+        System.out.println(MAX_ITERATIONS);
         // Всё что идёт на выход ниже, пойдёт в графики, я думаю нужно и общее время областей(оно кстати очень нестабильно) и среднее время точки
         //по факту эти графики имеют одинаковые оси, просто масштаб по у немного иной, но в целом идентичны
         System.out.println("Все точки вне фигуры: " + differenceEmpty + "мс.\nВсе точки на границе: " + differenceBorder + "мс.\nВсе точки внутри фигуры: " + differenceFilling + "мс.");
