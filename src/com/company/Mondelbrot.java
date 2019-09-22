@@ -1,4 +1,5 @@
 package com.company;
+import java.nio.Buffer;
 import java.util.*;
 
 public class Mondelbrot {
@@ -26,14 +27,25 @@ public class Mondelbrot {
         }
     }
 
+    public static long getTimeDifference(ArrayList<Integer[]> listOfElements) {
+        int sizeOfList = listOfElements.size();
+        Integer[][] arrayOfCoordinates = new Integer[sizeOfList][2];
+        listOfElements.toArray(arrayOfCoordinates);
+        Date dateStart = new Date();
+        for (Integer[] element : arrayOfCoordinates) {
+            iterate(element[0]/40.0f, element[1]/40.0f);
+        }
+        Date dateFinish = new Date();
+        return dateFinish.getTime() - dateStart.getTime();
+    }
+
     public static double[] countTime(){
 
-        boolean [][] arr = new boolean[80][80];
+        boolean arr[][] = new boolean[80][80];
 
         int x,y;
         for (y = -39; y < 39; y++) {
             for (x = -39; x < 39; x++) {
-                Date d3 = new Date();
                 boolean isStar;
                 if (iterate(x/40.0f,y/40.0f) == 0) {
                     isStar = true;
@@ -44,6 +56,7 @@ public class Mondelbrot {
                 arr[y+39][x+39] = isStar;
             }
         }
+
         //Тут начинаются тёрки с подсчётом времени каждого типа
         ArrayList<Integer[]> empty = new ArrayList<Integer[]>();
         ArrayList<Integer[]> border = new ArrayList<Integer[]>();
@@ -53,67 +66,58 @@ public class Mondelbrot {
                 Integer[] coords = new Integer[2];
                 try {
                     if (!arr[i][j]) {
-                        coords = new Integer[2];
                         coords[0] = i - 39;
                         coords[1] = j - 39;
                         empty.add(coords);
+//                        System.out.print(" ");
                     } else if (!arr[i + 1][j] || !arr[i - 1][j] || !arr[i][j + 1] || !arr[i][j - 1]) {
-                        coords = new Integer[2];
+                        //на случай если нужна область вокруг
+//                    } else if (!arr[i + 1][j] || !arr[i - 1][j] || !arr[i][j + 1] || !arr[i][j - 1] ||
+//                            !arr[i+1][j+1] || !arr[i+1][j-1] || !arr[i-1][j+1] || !arr[i-1][j-1] ) {
                         coords[0] = i - 39;
                         coords[1] = j - 39;
                         border.add(coords);
+//                        System.out.print("*");
                     } else {
-                        coords = new Integer[2];
                         coords[0] = i - 39;
                         coords[1] = j - 39;
                         filling.add(coords);
+//                        System.out.print(" ");
                     }
                 } catch (IndexOutOfBoundsException err) {
                     coords[0] = i - 39;
                     coords[1] = j - 39;
                     border.add(coords);
+//                    System.out.print("*");
                 }
             }
+//            System.out.println();
         }
-//        empty.forEach((e) -> System.out.print(e[0] + "" + e[1]) ); // просто интересная штука
-        int sizeEmpty = empty.size();
-        Integer[][] emptyDots = new Integer[sizeEmpty][2]; // Создаём массив размера динамического листа
-        empty.toArray(emptyDots);                             // Кладём туда инфу из динамчиеского листа
-        // Всё это делали для того, чтобы не выводить из динамического листа, т.к. он выводит вроде бы менее охотно
-        Date dateStart = new Date(); // !!! Можно сделать функцию и вызвать её три раза !!!
-        for (Integer[] element : emptyDots) {
-            iterate(element[0]/40.0f, element[1]/40.0f); // Игнорирование вывода, подсчёт времени после нахождения групп,
-        }                                    //а также преобразование динамического листа - идёт ради чистоты времени
-        Date dateFinish = new Date();
-        long differenceEmpty = dateFinish.getTime() - dateStart.getTime();
 
-        int sizeBorder = border.size();
-        Integer[][] borderDots = new Integer[sizeBorder][2];
-        border.toArray(borderDots);
-        dateStart = new Date();
-        for (Integer[] element : emptyDots) {
-            iterate(element[0]/40.0f, element[1]/40.0f);
-        }
-        dateFinish = new Date();
-        long differenceBorder = dateFinish.getTime() - dateStart.getTime();
+        double[] avgTime = new double[3];
 
-        int sizeFilling = filling.size();
-        Integer[][] fillingDots = new Integer[sizeFilling][2];
-        border.toArray(fillingDots);
-        dateStart = new Date();
-        for (Integer[] element : emptyDots) {
-            iterate(element[0]/40.0f, element[1]/40.0f);
-        }
-        dateFinish = new Date();
-        long differenceFilling = dateFinish.getTime() - dateStart.getTime();
+        long differenceEmpty = getTimeDifference(empty);
+        long differenceBorder = getTimeDifference(border);
+        long differenceFilling = getTimeDifference(filling);
 
-        avgTime[0]=differenceEmpty / (double)sizeEmpty;
-        avgTime[1]=differenceBorder / (double)sizeBorder;
-        avgTime[2]=differenceFilling / (double)sizeFilling;
+        avgTime[0] = differenceEmpty / (double) empty.size();
+        avgTime[1] = differenceBorder / (double) border.size();
+        avgTime[2] = differenceFilling / (double) filling.size();
+
+        System.out.println("Количество итераций: " + MAX_ITERATIONS);
+        System.out.println("              |  Снаружи  |  На границе  |  Внутри");
+        System.out.println("Общее время:  | " + differenceEmpty + "мс. | " + differenceBorder +
+                "мс. | " + differenceFilling + "мс.");
+        System.out.println("Среднее время:| " + differenceEmpty / (double) empty.size() +
+                "мс. | " + differenceBorder / (double) border.size() +
+                "мс. | " + differenceFilling / (double) filling.size() + "мс.\n");
+
+
+        return avgTime;
     }
 
-    public static void setMAX_ITERATIONS(int newMax){
-        MAX_ITERATIONS= newMax;
+    public static void setMAX_ITERATIONS(double newMax){
+        MAX_ITERATIONS= (int) newMax;
     }
 
     public static void main(String args[]) {
@@ -122,12 +126,12 @@ public class Mondelbrot {
         double[] avgFilling= new double[5];
         double[] avgBuffer= new double[3];
 
-        for (int i=2;i<=6;i++){
-            setMAX_ITERATIONS(10^i);
+        for (int i=0;i<4;i++){
+            setMAX_ITERATIONS(Math.pow(10,(i+2)));
             avgBuffer=countTime();
-            avgEmpty[i-2]=avgBuffer[0];
-            avgBorder[i-2]=avgBuffer[1];
-            avgFilling[i-2]=avgBuffer[2];
+            avgEmpty[i]=avgBuffer[0];
+            avgBorder[i]=avgBuffer[1];
+            avgFilling[i]=avgBuffer[2];
         }
 
 //        gui.setSeries(avgFilling,avgBorder,avgEmpty);
