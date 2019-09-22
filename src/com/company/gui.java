@@ -9,6 +9,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -69,6 +70,8 @@ public  class gui {
         XYPlot plot=(XYPlot) chart.getPlot();
         LogAxis axis=new LogAxis("MAX_ITERATION");
         plot.setDomainAxis(axis);
+
+        plot.getRenderer().setSeriesPaint(2, new Color(46,59,45));
 
         JFrame frame = new JFrame("Тестовое задание");
         frame.getContentPane().add(new ChartPanel(chart));
