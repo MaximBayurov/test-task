@@ -3,7 +3,9 @@ import javax.swing.JFrame;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.LogAxis;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -23,10 +25,11 @@ public  class gui {
     }
 
     /**
-     *Метод добавляет данные для графиков
-     * @param inside среднее значение вычисления точки внутри множества
-     * @param border среднее значение вычисления точки на границе множества
-     * @param outside среднее значение вычисления точки вне множества
+     *Метод добавляет данные для графиков в формате double[] для корректной работы метода необходимо передавать массивы
+     * из 5 элементов (double[5])
+     * @param inside - массив средних значений вычисления точки внутри множества
+     * @param border - массив средних значенийточки на границе множества
+     * @param outside - массив средних значений точки вне множества
      */
     public static void setSeries(double[] inside, double[] border, double[] outside){
 
@@ -47,7 +50,6 @@ public  class gui {
             insideSeries.add(i, insideSeriesData[j]);
             borderSeries.add(i,borderSeriesData[j]);
             outsideSeries.add(i,outsideSeriesData[j]);
-            System.out.println(i+" "+insideSeriesData[j]+" "+" "+ borderSeriesData[j]+" "+outsideSeriesData[j]);
         }
 
         XYSeriesCollection xyDataset = new XYSeriesCollection();
@@ -55,19 +57,24 @@ public  class gui {
         xyDataset.addSeries(borderSeries);
         xyDataset.addSeries(outsideSeries);
 
-        JFreeChart chart = ChartFactory.createScatterPlot(
+        JFreeChart chart = ChartFactory.createXYLineChart(
                 "Зависимость времени выполнения от MAX_ITERATION",
-                "MAX_ITERATION","Среднее время",
+                "MAX_ITERATION","Среднее время, мс",
                 xyDataset,
                 PlotOrientation.VERTICAL,
                 true,
                 true,
-                false
+                true
         );
+        XYPlot plot=(XYPlot) chart.getPlot();
+        LogAxis axis=new LogAxis("MAX_ITERATION");
+        plot.setDomainAxis(axis);
+
         JFrame frame = new JFrame("Тестовое задание");
         frame.getContentPane().add(new ChartPanel(chart));
         frame.setSize(400,300);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
     }
 }

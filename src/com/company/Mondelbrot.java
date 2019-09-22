@@ -1,4 +1,5 @@
 package com.company;
+import java.nio.Buffer;
 import java.util.*;
 
 public class Mondelbrot {
@@ -128,8 +129,8 @@ public class Mondelbrot {
         return avgTime;
     }
 
-    public static void setMAX_ITERATIONS(int newMax){
-        MAX_ITERATIONS= newMax;
+    public static void setMAX_ITERATIONS(double newMax){
+        MAX_ITERATIONS= (int) newMax;
     }
 
     public static void main(String args[]) {
@@ -140,7 +141,7 @@ public class Mondelbrot {
 
 
         for (int i=2;i<=6;i++){
-            setMAX_ITERATIONS(10^i);
+            setMAX_ITERATIONS(Math.pow(10,i));
             avgBuffer=countTime();
             avgEmpty[i-2]=avgBuffer[0];
             avgBorder[i-2]=avgBuffer[1];
