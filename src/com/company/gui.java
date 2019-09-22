@@ -8,11 +8,12 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public  class gui {
-    static ArrayList<Double> insideSeriesData=new ArrayList<Double>();
-    static ArrayList<Double> borderSeriesData=new ArrayList<Double>();
-    static ArrayList<Double> outsideSeriesData=new ArrayList<Double>();
+    static double[] insideSeriesData=new double[5];
+    static double[] borderSeriesData=new double[5];
+    static double[] outsideSeriesData=new double[5];
 
     /**
      * Приватный конструктор не позволяет создавать экземпляров класса
@@ -27,16 +28,11 @@ public  class gui {
      * @param border среднее значение вычисления точки на границе множества
      * @param outside среднее значение вычисления точки вне множества
      */
-    public static void setSeries(double inside, double border, double outside){
-        Double insideAreaAvg=inside;
-        Double borderAreaAvg=border;
-        Double outsideAreaAvg=outside;
+    public static void setSeries(double[] inside, double[] border, double[] outside){
 
-        if (insideSeriesData.size()<5&&borderSeriesData.size()<5&&outsideSeriesData.size()<5) {
-            insideSeriesData.add(insideAreaAvg);
-            borderSeriesData.add(borderAreaAvg);
-            outsideSeriesData.add(outsideAreaAvg);
-        }
+        insideSeriesData=inside;
+        borderSeriesData=border;
+        outsideSeriesData=outside;
     }
 
     /**
@@ -48,9 +44,10 @@ public  class gui {
         XYSeries outsideSeries = new XYSeries("Внешняя");
 
         for(int i = 100, j=0; i <= Math.pow(10,6); i*=10, j+=1){
-            insideSeries.add(i, insideSeriesData.get(j));
-            borderSeries.add(i,borderSeriesData.get(j));
-            outsideSeries.add(i,outsideSeriesData.get(j));
+            insideSeries.add(i, insideSeriesData[j]);
+            borderSeries.add(i,borderSeriesData[j]);
+            outsideSeries.add(i,outsideSeriesData[j]);
+            System.out.println(i+" "+insideSeriesData[j]+" "+" "+ borderSeriesData[j]+" "+outsideSeriesData[j]);
         }
 
         XYSeriesCollection xyDataset = new XYSeriesCollection();

@@ -27,7 +27,9 @@ public class Mondelbrot {
         }
     }
 
-    public static void main(String args[]) {
+    public static double[] countTime(){
+        double avgTime[]=new double[3];
+
         for (int i = 0; i < 80; i++)
             for (int j = 0; j < 80; j++)
                 arr[i][j] = new IsPoint();
@@ -36,12 +38,10 @@ public class Mondelbrot {
         Date d4;
         long diff2;
         for (y = -39; y < 39; y++) {
-//            System.out.print("\n");
             for (x = -39; x < 39; x++) {
                 Date d3 = new Date();
                 boolean isStar;
                 if (iterate(x/40.0f,y/40.0f) == 0) {
-//                    System.out.print("*");
                     d4 = new Date();
                     isStar = true;
                 }
@@ -120,32 +120,35 @@ public class Mondelbrot {
         }
         dateFinish = new Date();
         long differenceFilling = dateFinish.getTime() - dateStart.getTime();
-        System.out.println(MAX_ITERATIONS);
-        // Всё что идёт на выход ниже, пойдёт в графики, я думаю нужно и общее время областей(оно кстати очень нестабильно) и среднее время точки
-        //по факту эти графики имеют одинаковые оси, просто масштаб по у немного иной, но в целом идентичны
-        System.out.println("Все точки вне фигуры: " + differenceEmpty + "мс.\nВсе точки на границе: " + differenceBorder + "мс.\nВсе точки внутри фигуры: " + differenceFilling + "мс.");
-        System.out.print("Средняя точка вне фигуры: " + differenceEmpty / (double)sizeEmpty + "мс.\nСредняя точка на границе: " + differenceBorder / (double)sizeBorder + "мс.\nСредняя точка внутри фигуры: " + differenceFilling / (double)sizeFilling + "мс.");
 
-//        System.out.println("Outside = " + outside); // Вывод точек на границе, вдруг понадобится? Там правда теперь надо много менять
-//        System.out.println("Porebrik = " + porebrik);
-//        System.out.println("Inside = " + inside);
-//        System.out.println("Srednee Outside = " + outside/counterOutside);
-//        System.out.println("Srednee Porebrik = " + porebrik/counterPorebrik);
-//        System.out.println("Srednee Inside = " + inside/counterInside);
-//
-//        System.out.println("counterPorebrik: " + counterPorebrik);
-//
-//        for (int i = 0; i < 80; i++) {
-//            for (int j = 0; j < 80; j++) {
-//                boolean r = false;
-//                for (int k = 0; k < 293; k++) {
-//                    if (porebrikAria[k][0] == i && porebrikAria[k][1] == j) r = true;
-//                }
-//                if (r) System.out.print("*");
-//                else System.out.print(" ");
-//            }
-//            System.out.println();
-//        }
+        avgTime[0]=differenceEmpty / (double)sizeEmpty;
+        avgTime[1]=differenceBorder / (double)sizeBorder;
+        avgTime[2]=differenceFilling / (double)sizeFilling;
+
+        return avgTime;
+    }
+
+    public static void setMAX_ITERATIONS(int newMax){
+        MAX_ITERATIONS= newMax;
+    }
+
+    public static void main(String args[]) {
+        double[] avgEmpty= new double[5];
+        double[] avgBorder= new double[5];
+        double[] avgFilling= new double[5];
+        double[] avgBuffer= new double[3];
+
+
+        for (int i=2;i<=6;i++){
+            setMAX_ITERATIONS(10^i);
+            avgBuffer=countTime();
+            avgEmpty[i-2]=avgBuffer[0];
+            avgBorder[i-2]=avgBuffer[1];
+            avgFilling[i-2]=avgBuffer[2];
+        }
+
+        gui.setSeries(avgFilling,avgBorder,avgEmpty);
+        gui.draw();
     }
 }
 
