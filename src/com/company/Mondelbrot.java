@@ -5,7 +5,6 @@ public class Mondelbrot {
 
     static int BAILOUT = 16;
     static int MAX_ITERATIONS = 1000000;
-    static IsPoint[][] arr = new IsPoint[80][80];
 
     private static int iterate(float x, float y) {
         float cr = y-0.5f;
@@ -28,36 +27,23 @@ public class Mondelbrot {
     }
 
     public static double[] countTime(){
-        double avgTime[]=new double[3];
 
-        for (int i = 0; i < 80; i++)
-            for (int j = 0; j < 80; j++)
-                arr[i][j] = new IsPoint();
-        Date d1 = new Date();
+        boolean [][] arr = new boolean[80][80];
+
         int x,y;
-        Date d4;
-        long diff2;
         for (y = -39; y < 39; y++) {
             for (x = -39; x < 39; x++) {
                 Date d3 = new Date();
                 boolean isStar;
                 if (iterate(x/40.0f,y/40.0f) == 0) {
-                    d4 = new Date();
                     isStar = true;
                 }
                 else {
-                    System.out.print(" ");
-                    d4 = new Date();
                     isStar = false;
                 }
-                diff2 = d4.getTime() - d3.getTime();
-                arr[y+39][x+39].secs = diff2/1000.0f;
-                arr[y+39][x+39].star = isStar;
+                arr[y+39][x+39] = isStar;
             }
         }
-        Date d2 = new Date();
-        long diff = d2.getTime() - d1.getTime();
-        System.out.println("\nJava Elapsed " + diff/1000.0f);
         //Тут начинаются тёрки с подсчётом времени каждого типа
         ArrayList<Integer[]> empty = new ArrayList<Integer[]>();
         ArrayList<Integer[]> border = new ArrayList<Integer[]>();
@@ -66,12 +52,12 @@ public class Mondelbrot {
             for (int j = 0; j < 80; j++) {
                 Integer[] coords = new Integer[2];
                 try {
-                    if (!arr[i][j].star) {
+                    if (!arr[i][j]) {
                         coords = new Integer[2];
                         coords[0] = i - 39;
                         coords[1] = j - 39;
                         empty.add(coords);
-                    } else if (!arr[i + 1][j].star || !arr[i - 1][j].star || !arr[i][j + 1].star || !arr[i][j - 1].star) {
+                    } else if (!arr[i + 1][j] || !arr[i - 1][j] || !arr[i][j + 1] || !arr[i][j - 1]) {
                         coords = new Integer[2];
                         coords[0] = i - 39;
                         coords[1] = j - 39;
@@ -124,8 +110,6 @@ public class Mondelbrot {
         avgTime[0]=differenceEmpty / (double)sizeEmpty;
         avgTime[1]=differenceBorder / (double)sizeBorder;
         avgTime[2]=differenceFilling / (double)sizeFilling;
-
-        return avgTime;
     }
 
     public static void setMAX_ITERATIONS(int newMax){
@@ -138,7 +122,6 @@ public class Mondelbrot {
         double[] avgFilling= new double[5];
         double[] avgBuffer= new double[3];
 
-
         for (int i=2;i<=6;i++){
             setMAX_ITERATIONS(10^i);
             avgBuffer=countTime();
@@ -147,8 +130,8 @@ public class Mondelbrot {
             avgFilling[i-2]=avgBuffer[2];
         }
 
-        gui.setSeries(avgFilling,avgBorder,avgEmpty);
-        gui.draw();
+//        gui.setSeries(avgFilling,avgBorder,avgEmpty);
+//        gui.draw();
     }
 }
 
