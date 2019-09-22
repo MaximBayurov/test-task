@@ -120,11 +120,11 @@ public class Mondelbrot {
         }
         dateFinish = new Date();
         long differenceFilling = dateFinish.getTime() - dateStart.getTime();
-        System.out.println(MAX_ITERATIONS);
-        // Всё что идёт на выход ниже, пойдёт в графики, я думаю нужно и общее время областей(оно кстати очень нестабильно) и среднее время точки
-        //по факту эти графики имеют одинаковые оси, просто масштаб по у немного иной, но в целом идентичны
-        System.out.println("Все точки вне фигуры: " + differenceEmpty + "мс.\nВсе точки на границе: " + differenceBorder + "мс.\nВсе точки внутри фигуры: " + differenceFilling + "мс.");
-        System.out.print("Средняя точка вне фигуры: " + differenceEmpty / (double)sizeEmpty + "мс.\nСредняя точка на границе: " + differenceBorder / (double)sizeBorder + "мс.\nСредняя точка внутри фигуры: " + differenceFilling / (double)sizeFilling + "мс.");
+//        System.out.println(MAX_ITERATIONS);
+//        // Всё что идёт на выход ниже, пойдёт в графики, я думаю нужно и общее время областей(оно кстати очень нестабильно) и среднее время точки
+//        //по факту эти графики имеют одинаковые оси, просто масштаб по у немного иной, но в целом идентичны
+//        System.out.println("Все точки вне фигуры: " + differenceEmpty + "мс.\nВсе точки на границе: " + differenceBorder + "мс.\nВсе точки внутри фигуры: " + differenceFilling + "мс.");
+//        System.out.print("Средняя точка вне фигуры: " + differenceEmpty / (double)sizeEmpty + "мс.\nСредняя точка на границе: " + differenceBorder / (double)sizeBorder + "мс.\nСредняя точка внутри фигуры: " + differenceFilling / (double)sizeFilling + "мс.");
 
 //        System.out.println("Outside = " + outside); // Вывод точек на границе, вдруг понадобится? Там правда теперь надо много менять
 //        System.out.println("Porebrik = " + porebrik);
