@@ -1,5 +1,6 @@
 package com.company;
 import java.nio.Buffer;
+import java.io.*;
 import java.util.*;
 
 public class Mondelbrot {
@@ -104,14 +105,25 @@ public class Mondelbrot {
         avgTime[1] = differenceBorder / (double) border.size();
         avgTime[2] = differenceFilling / (double) filling.size();
 
-        System.out.println("Количество итераций: " + MAX_ITERATIONS);
-        System.out.println("              |  Снаружи  |  На границе  |  Внутри");
-        System.out.println("Общее время:  | " + differenceEmpty + "мс. | " + differenceBorder +
-                "мс. | " + differenceFilling + "мс.");
-        System.out.println("Среднее время:| " + differenceEmpty / (double) empty.size() +
-                "мс. | " + differenceBorder / (double) border.size() +
-                "мс. | " + differenceFilling / (double) filling.size() + "мс.\n");
+        try(FileWriter writer = new FileWriter("Console_output.txt", true))
+        {
+            String text = "Количество итераций: " + MAX_ITERATIONS+'\n'+
+                    "              |  Снаружи  |  На границе  |  Внутри"+'\n'+
+                    "Общее время:  | " + differenceEmpty + "мс. | " + differenceBorder +
+                    "мс. | " + differenceFilling + "мс."+'\n'+
+                    "Среднее время:| " + differenceEmpty / (double) empty.size() +
+                    "мс. | " + differenceBorder / (double) border.size() +
+                    "мс. | " + differenceFilling / (double) filling.size() + "мс.\n";
+            writer.write(text);
 
+            writer.append("\n\n");
+
+            writer.flush();
+        }
+        catch(IOException ex){
+
+            System.out.println(ex.getMessage());
+        }
 
         return avgTime;
     }
@@ -126,7 +138,8 @@ public class Mondelbrot {
         double[] avgFilling= new double[5];
         double[] avgBuffer= new double[3];
 
-        for (int i=0;i<4;i++){
+
+        for (int i=0;i<=4;i++){
             setMAX_ITERATIONS(Math.pow(10,(i+2)));
             avgBuffer=countTime();
             avgEmpty[i]=avgBuffer[0];
@@ -134,8 +147,8 @@ public class Mondelbrot {
             avgFilling[i]=avgBuffer[2];
         }
 
-//        gui.setSeries(avgFilling,avgBorder,avgEmpty);
-//        gui.draw();
+        gui.setSeries(avgFilling,avgBorder,avgEmpty);
+        gui.draw();
     }
 }
 
